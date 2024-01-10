@@ -47,6 +47,7 @@ const Navbar = () => {
           aria-label="Toggle menu"
           icon={<GiHamburgerMenu />}
           onClick={handleMenuToggle}
+          display={{ base: "flex", md: "none" }}
         />
       </Flex>
 
