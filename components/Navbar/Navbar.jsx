@@ -1,56 +1,52 @@
 
-import { Box, Flex, Spacer, IconButton, useColorMode } from "@chakra-ui/react";
-import { HamburgerIcon, SunIcon, MoonIcon } from "@chakra-ui/icons";
+import { Box, Flex, Spacer,Text, IconButton, useColorMode} from "@chakra-ui/react";
 import Link from "next/link";
+import { FaMoon} from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { IoMdSunny } from "react-icons/io";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
 
   return (
-    <ChakraProvider>
-    <Box bg="teal" p={4} boxShadow="md">
-      <Flex alignItems="center">
+    <Box bg={colorMode === "light" ? "white" : "black"} 
+        color={colorMode === "light" ? "black" : "white"}  
+        p={4} boxShadow="md">
+      <Flex justifyContent={"space-between"} >
         <Link href="/">
-          <a>
             <Box p="2">
-              <strong>My Ecommerce</strong>
+              <Text>My Ecommerce</Text>
             </Box>
-          </a>
         </Link>
 
         <Spacer />
 
-        <Box display={{ base: "none", md: "block" }}>
-          {/* Add your navigation links here */}
+        <Flex>
+          
           <Link href="/products">
-            <a>
               <Box p="2">Products</Box>
-            </a>
           </Link>
           <Link href="/cart">
-            <a>
               <Box p="2">Cart</Box>
-            </a>
           </Link>
           {/* Add more links as needed */}
-        </Box>
+        </Flex>
 
         <Spacer />
 
         <IconButton
           aria-label="Toggle dark mode"
-          icon={colorMode === "light" ? <MoonIcon /> : <SunIcon />}
+          icon={colorMode === "light" ? <FaMoon /> : <IoMdSunny />}
           onClick={toggleColorMode}
         />
 
         <IconButton
           aria-label="Toggle menu"
-          icon={<HamburgerIcon />}
+          icon={<GiHamburgerMenu/>}
           display={{ base: "block", md: "none" }}
         />
       </Flex>
     </Box>
-    </ChakraProvider>
   );
 };
 
