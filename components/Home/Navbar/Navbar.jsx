@@ -13,6 +13,13 @@ const Navbar = () => {
     setMenuOpen(!isMenuOpen);
   };
 
+  const closeMobileMenu = () => {
+    if (isMenuOpen) {
+      setMenuOpen(false);
+    }
+  };
+
+
   return (
     <Box
       bg={colorMode === "light" ? "white" : "black"}
@@ -34,26 +41,27 @@ const Navbar = () => {
           <Link href="/cart">
             <Box p="2">Cart</Box>
           </Link>
-          {/* Add more links as needed */}
         </Flex>
 
-        <IconButton
-          aria-label="Toggle dark mode"
-          icon={colorMode === "light" ? <FaMoon /> : <IoMdSunny />}
-          onClick={toggleColorMode}
-        />
+        <Flex gap={4}>
+            <IconButton
+              aria-label="Toggle dark mode"
+              icon={colorMode === "light" ? <FaMoon /> : <IoMdSunny />}
+              onClick={toggleColorMode}
+            />
 
-        <IconButton
-          aria-label="Toggle menu"
-          icon={<GiHamburgerMenu />}
-          onClick={handleMenuToggle}
-          display={{ base: "flex", md: "none" }}
-        />
+            <IconButton
+              aria-label="Toggle menu"
+              icon={<GiHamburgerMenu />}
+              onClick={handleMenuToggle}
+              display={{md:"none" ,base:"flex"}}
+            />
+         </Flex>
       </Flex>
 
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <Flex direction="column" mt={4}>
+        <Flex display={{md:"none",base:"flex"}} width={""} direction="column" mt={4}>
           <Link href="/products">
             <Box p="2">Products</Box>
           </Link>
