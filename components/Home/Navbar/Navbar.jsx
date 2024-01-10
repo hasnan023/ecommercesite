@@ -13,13 +13,6 @@ const Navbar = () => {
     setMenuOpen(!isMenuOpen);
   };
 
-  const closeMobileMenu = () => {
-    if (isMenuOpen) {
-      setMenuOpen(false);
-    }
-  };
-
-
   return (
     <Box
       bg={colorMode === "light" ? "white" : "black"}

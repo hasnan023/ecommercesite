@@ -1,22 +1,29 @@
 // components/Header.js
-import { Box ,Image } from '@chakra-ui/react';
-import NextImage from 'next/image';
+import { Box, Flex, Image, Text,Button } from '@chakra-ui/react';
 
 const Header = () => {
   return (
-    <Box minHeight= "40px" >
-      {/* Example using CSS for relative units */}
-      <img
-      
+    <Flex align="center" justifyContent="center" gap={50}  p={50} >
+      {/* Left Section */}
+      <Box mt={30} >
+        <Text fontSize="xl" fontWeight="bold">
+          Shop here 
+        </Text>
+        <Button mt={30}>
+          Get started
+        </Button>
+      </Box>
 
-        src="/img.jpg" // Make sure the image is in the public directory
-        alt="Your Image Alt Text"
-        width="100%" 
-       
-        
-        objectFit="contain" // Maintain aspect ratio while covering the container
-      />
-    </Box>
+      {/* Right Section */}
+      <Box >
+        <Image
+          src="/img.png" // Replace with the actual path to your image
+          alt="Your Image Alt Text" 
+          height="50vh"// Set the desired size for the image
+          objectFit="contain" // Optional: Apply a circular border to the image
+        />
+      </Box>
+    </Flex>
   );
 };
 
