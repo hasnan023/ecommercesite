@@ -1,13 +1,13 @@
 import React from 'react'
-import Navbar2 from '@/components/Home/Navbar2/Navbar2';
-import Header2 from '@/components/Home/Header2/Header2';
+import AddToCart from '../../components/AddToCart/AddToCart';
+import Navbar from '@/components/Home/Navbar/Navbar';
 import { ChakraProvider } from '@chakra-ui/react';
 
 const index = () => {
   return (
     <ChakraProvider>
-      <Navbar2/>
-      <Header2/>
+        <Navbar/>
+      <AddToCart/>
     </ChakraProvider>
   )
 }

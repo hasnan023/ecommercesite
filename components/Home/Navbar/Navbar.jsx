@@ -1,12 +1,21 @@
-import { Box, Flex, Text, Spacer, IconButton, useColorMode, useBreakpointValue, useDisclosure,  } from '@chakra-ui/react';
-import { FaMoon } from 'react-icons/fa';
-import { GiHamburgerMenu } from 'react-icons/gi';
-import { IoMdSunny } from 'react-icons/io';
-import Link from 'next/link';
-import { LuShoppingCart } from 'react-icons/lu';
-import { FaRegUserCircle } from 'react-icons/fa';
-import { IoIosClose } from 'react-icons/io';
-import React, { useEffect, useState } from 'react';
+import {
+  Box,
+  Flex,
+  Text,
+  Spacer,
+  IconButton,
+  useColorMode,
+  useBreakpointValue,
+  useDisclosure,
+} from "@chakra-ui/react";
+import { FaMoon } from "react-icons/fa";
+import { GiHamburgerMenu } from "react-icons/gi";
+import { IoMdSunny } from "react-icons/io";
+import Link from "next/link";
+import { LuShoppingCart } from "react-icons/lu";
+import { FaRegUserCircle } from "react-icons/fa";
+import { IoIosClose } from "react-icons/io";
+import React, { useEffect, useState } from "react";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -17,12 +26,15 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
-  const toggle= () => {
+  const toggle = () => {
     setIsOpen(!isOpen);
-  }
+  };
   return (
-    <Box bg="white.500" p={4} shadow="md" >
-      <Flex justify="space-between" flexDirection={isSmallerScreen ? 'column' : 'row'}>
+    <Box bg="white.500" p={4} shadow="md">
+      <Flex
+        justify="space-between"
+        flexDirection={isSmallerScreen ? "column" : "row"}
+      >
         {/* Section 1: Brand Name */}
         <Text fontSize="xl" fontWeight="bold" color="gray">
           YourBrand
@@ -30,11 +42,9 @@ const Navbar = () => {
         {/* Section 2: Links */}
         {(!isSmallerScreen || isOpen) && (
           <Flex
-            
-            justify={isSmallerScreen ? 'center' : 'space-between'}
-            flexDirection={isSmallerScreen ? 'column' : 'row'}
+            justify={isSmallerScreen ? "center" : "space-between"}
+            flexDirection={isSmallerScreen ? "column" : "row"}
             alignItems="center"
-            
             mt={isSmallerScreen ? 4 : 0}
           >
             <Link href="/main" passHref>
@@ -62,19 +72,33 @@ const Navbar = () => {
 
         {/* Section 3: Icons */}
         {(!isSmallerScreen || isOpen) && (
-          <Flex alignItems="center"  flexDirection={isSmallerScreen ? 'column' : 'row'} >
-            
+          <Flex
+            alignItems="center"
+            flexDirection={isSmallerScreen ? "column" : "row"}
+          >
             <IconButton
-              icon={colorMode === 'light' ? <FaMoon /> : <IoMdSunny />}
+              icon={colorMode === "light" ? <FaMoon /> : <IoMdSunny />}
               onClick={() => {
                 toggleColorMode();
-                  closeMenu();
+                closeMenu();
               }}
               color="grey"
               mb={2}
             />
-            <IconButton icon={<LuShoppingCart />} color="grey" ml={2} onClick={closeMenu} mb={2} />
-            <IconButton icon={<FaRegUserCircle />} color="grey" ml={2} onClick={closeMenu} mb={2} />
+            <IconButton
+              icon={<LuShoppingCart />}
+              color="grey"
+              ml={2}
+              onClick={closeMenu}
+              mb={2}
+            />
+            <IconButton
+              icon={<FaRegUserCircle />}
+              color="grey"
+              ml={2}
+              onClick={closeMenu}
+              mb={2}
+            />
           </Flex>
         )}
         {/* Hamburger menu for smaller screens */}
@@ -94,12 +118,6 @@ const Navbar = () => {
 };
 
 export default Navbar;
-
-
-
-
-
-
 
 // import { useState } from "react";
 // import { Box, Flex, Text, IconButton, useColorMode } from "@chakra-ui/react";

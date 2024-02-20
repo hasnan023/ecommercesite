@@ -1,10 +1,15 @@
 import React from 'react'
 import AuthForm from '@/components/Auth/AuthForm'
+import { ChakraProvider } from '@chakra-ui/react'
+import Navbar from '@/components/Home/Navbar/Navbar';
 
 const index = () => {
   return (
-    <div><AuthForm/> </div>
-  )
+    <ChakraProvider>
+      <Navbar/>
+      <AuthForm />
+    </ChakraProvider>
+  );
 }
 
 export default index
