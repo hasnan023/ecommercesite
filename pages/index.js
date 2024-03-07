@@ -6,7 +6,6 @@ import Navbar from '@/components/Home/Navbar/Navbar';
 const index = () => {
   return (
     <ChakraProvider>
-      <Navbar/>
       <AuthForm />
     </ChakraProvider>
   );
