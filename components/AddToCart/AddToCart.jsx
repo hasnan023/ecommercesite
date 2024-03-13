@@ -52,8 +52,11 @@ function Cart() {
             width="100%"
             display="flex"
             alignItems="center"
+            suppressHydrationWarning
           >
             <Image
+            suppressHydrationWarning
+
               src={product.image}
               boxSize="100px"
               objectFit="cover"
@@ -112,4 +115,4 @@ function Cart() {
   );
 }
 
-export default Cart;
+export default AddToCart;

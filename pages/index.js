@@ -9,7 +9,6 @@ const index = () => {
   return (
     <Provider store={store}>
     <ChakraProvider>
-      <Navbar/>
       <AuthForm />
     </ChakraProvider>
     </Provider>

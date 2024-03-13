@@ -4,7 +4,7 @@ import store from "@/store";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-function app({ Component, pageProps }) {
+function MyApp({ Component, pageProps }) {
   return (
     <Provider store={store}>
       <Component {...pageProps} />
@@ -13,4 +13,4 @@ function app({ Component, pageProps }) {
   );
 }
 
-export default app;
+export default MyApp;
