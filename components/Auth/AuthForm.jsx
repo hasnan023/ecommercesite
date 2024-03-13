@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaAngleDown, FaAngleUp } from "react-icons/fa6";
+import { ColorPicker, useColor } from "react-color-palette";
+import "react-color-palette/css";
+import Barcode from "react-barcode";
+
 
 import {
   Table,
@@ -15,6 +19,7 @@ import {
   TableCaption,
   TableContainer,
   Image,
+  InputRightElement,
   Tooltip,
   Text,
   Center,
@@ -28,9 +33,12 @@ import {
   ListItem,
   Flex,
   InputRightAddon,
+  Progress,
   InputGroup,
 } from "@chakra-ui/react";
 import { FaAngleLeft } from "react-icons/fa";
+import { FormGroup } from "react-bootstrap";
+import QRCode from "react-qr-code";
 
 const AuthForm = () => {
   const [avgRate, setAvgRate] = useState(0);
@@ -39,18 +47,37 @@ const AuthForm = () => {
   const [search, setSearch] = useState("");
   const [boxState, setBoxState] = useState([]);
   const [openBoxes, setOpenBoxes] = useState([]);
-  const [error,setError] = useState(null);
-  const [valid,setIsValid] = useState(false);
+  const [error, setError] = useState(null);
+  const [valid, setIsValid] = useState(false);
+  const [selectedFile, setSelectedFile] = useState([]);
+  const [previewURL, setPreviewURL] = useState(null);
+  const [inputText, setInputText] = useState("");
+  const [textArray, setTextArray] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [voiceDetect, setVoiceDetect] = useState("");
+  const [color, setColor] = useColor("#121212");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState();
+  const [barValue,setBarValue] = useState(0);
+  const [barcodeData, setBarcodeData] = useState("");
+   const [qrCodeData, setQrCodeData] = useState("");
+    const [password, setPassword] = useState("");
+    const [passwordLength, setPasswordLength] = useState(8);
+    const [includeUppercase, setIncludeUppercase] = useState(true);
+    const [includeLowercase, setIncludeLowercase] = useState(true);
+    const [includeNumbers, setIncludeNumbers] = useState(true);
+    const [includeSymbols, setIncludeSymbols] = useState(true);
 
-    const [inputText, setInputText] = useState("");
-    const [textArray, setTextArray] = useState([]);
-
+  const pageSize =  7;
   useEffect(() => {
     const products = async () => {
       const response = await axios
         .get("https://fakestoreapi.com/products")
         .then((response) => {
           console.log(response.data);
+          const totalP = response.data.length / pageSize;
+          setTotalPages(totalP.toPrecision(1));
+          console.log(totalP.toPrecision(1));
           const averageRate =
             response.data.reduce((totalRat, data) => {
               return totalRat + data.rating.rate;
@@ -65,20 +92,25 @@ const AuthForm = () => {
           console.log(err);
         });
     };
+
     products();
-const localData = localStorage.getItem("addData");
-if (localData) {
-  setTextArray(JSON.parse(localData));
-}
+    const localData = localStorage.getItem("addData");
+    if (localData) {
+      setTextArray(JSON.parse(localData));
+    }
     // const localData = localStorage.getItem("addData")
     // setTextArray(JSON.parse(localData));
-  }, [refresh]);
+  }, [refresh, currentPage]);
 
   console.log(products);
-
+  const startIndex = (currentPage -1 ) *pageSize;
+  const endIndex = startIndex + (pageSize) 
+  const currentPageData = products.slice(startIndex, endIndex);
+  console.log(currentPageData);
+  console.log(startIndex, endIndex);
   //const filteredProduct = products.filter((product) => product.price > 50);
 
-  const filterProducts = products.filter(
+  const filterProducts = currentPageData.filter(
     (product) =>
       product.title.toLowerCase().indexOf(search.toLowerCase()) !== -1
   );
@@ -99,6 +131,10 @@ if (localData) {
 
   // }
 
+  var variable = 10;
+
+  console.log(variable);
+
   const handleToggleBox = (index) => {
     console.log(index);
     console.log(openBoxes);
@@ -111,26 +147,80 @@ if (localData) {
   console.log(openBoxes);
   const { colorMode } = useColorMode();
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+    setSelectedFile(file);
 
- 
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewURL(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewURL(null);
+    }
+  };
 
- const handleKeyPress = () => {
-   if (inputText.trim() !== "" && inputText.length>5) {
-     const updatedArray = [...textArray, inputText.trim()];
-     localStorage.setItem("addData", JSON.stringify(updatedArray));
-     setTextArray(updatedArray);
-     setInputText("");
-     setError(null);
-     setIsValid(false);
-   } else{
-     setError("charcters must be greater than 5");
-     setIsValid(true);
+  const handleColorChange = (newColor) => {
+    setColor(newColor);
+  };
+
+  const arrayData = ["a", "b", "c"];
+  arrayData;
+  console.log(arrayData);
+
+  const handleKeyPress = () => {
+    if (inputText.trim() !== "" && inputText.length > 5) {
+      const updatedArray = [...textArray, inputText.trim()];
+      localStorage.setItem("addData", JSON.stringify(updatedArray));
+      setTextArray(updatedArray);
+      setInputText("");
+      setError(null);
+      setIsValid(false);
+    } else {
+      setError("charcters must be greater than 5");
+      setIsValid(true);
       return;
-   }
- };
+    }
+  };
+
+  const handleInputChange = (event) => {
+    setBarcodeData(event.target.value);
+  };
+
+  const handleQrInputChange = (event) => {
+    setQrCodeData(event.target.value);
+  };
+
+
+    const generatePassword = () => {
+      const uppercaseChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      const lowercaseChars = "abcdefghijklmnopqrstuvwxyz";
+      const numberChars = "0123456789";
+      const symbolChars = "!@#$%^&*()-_=+";
+
+      let chars = "";
+
+      if (includeUppercase) chars += uppercaseChars;
+      if (includeLowercase) chars += lowercaseChars;
+      if (includeNumbers) chars += numberChars;
+      if (includeSymbols) chars += symbolChars;
+
+      let generatedPassword = "";
+      for (let i = 0; i < passwordLength; i++) {
+        generatedPassword += chars.charAt(
+          Math.floor(Math.random() * chars.length)
+        );
+      }
+
+      setPassword(generatedPassword);
+    };
+
+
   return (
     <div>
-      {/* <Center mt={4} display="flex" flexDirection="column" gap={3}>
+      <Center mt={4} display="flex" flexDirection="column" gap={3}>
         <Heading as="h2" size="lg" color="grey">
           Product Details
         </Heading>
@@ -182,7 +272,26 @@ if (localData) {
             ))}
           </Tbody>
         </Table>
-      </TableContainer> */}
+        <Flex
+          mt="20px"
+          align="center"
+          justifyContent="flex-end"
+          gap={4}
+          mr={14}
+        >
+          <Button onClick={() => setCurrentPage(Math.max(currentPage - 1, 1))}>
+            previous
+          </Button>
+          <Text>{currentPage}</Text>
+          <Button
+            onClick={() =>
+              setCurrentPage(Math.min(currentPage + 1, totalPages))
+            }
+          >
+            Next
+          </Button>
+        </Flex>
+      </TableContainer>
       {/* //accordian */}
       <Box align="center" p={4}>
         <Heading p={4}> FAQ's </Heading>
@@ -222,7 +331,6 @@ if (localData) {
           <Input
             type="text"
             borderRadius={30}
-            valid={!error}
             focusBorderColor={error ? "red.300" : undefined}
             width="30%"
             value={inputText}
@@ -249,7 +357,132 @@ if (localData) {
       </Box>
 
       <Box>
-        
+        <InputGroup justifyContent="center">
+          <Input type="file" onChange={handleFileChange} width="30%" />
+          {selectedFile && (
+            <InputRightElement width="30%">
+              <p>{selectedFile.name}</p>
+            </InputRightElement>
+          )}
+        </InputGroup>
+        {previewURL && (
+          <Box mt={2} justifyContent="center">
+            <Image src={previewURL} alt="Preview" maxW="200px" maxH="200px" />
+          </Box>
+        )}
+      </Box>
+
+      <Box mt="20px" display="flex" justifyContent="center" gap={3}>
+        <Box
+          boxSize="60px"
+          alignItems="center"
+          mt="20px"
+          border="1px"
+          bgColor={color.hex}
+        ></Box>
+
+        <Box mt="20px" width={200} height={200}>
+          <ColorPicker
+            color={color}
+            onChange={setColor}
+            hideInput={["rgb", "hsv", "hex"]}
+          />
+          {console.log(color)}
+        </Box>
+      </Box>
+
+      <Flex mt="90px" justifyContent="center">
+        <Progress width="30%" value={barValue}></Progress>
+        <Box ml="20px">
+          <Text fontSize="2xl" fontWeight="bold">
+            {barValue}%
+          </Text>
+        </Box>
+        <Button
+          mt={5}
+          onClick={() => setBarValue(Math.min(barValue + 25), 100)}
+        >
+          +
+        </Button>
+        <Button mt={5} onClick={() => setBarValue(Math.min(barValue - 25), 0)}>
+          -
+        </Button>
+      </Flex>
+
+      <Box align="center" padding={3} gap={5}>
+        <Input
+          border="1px solid grey"
+          width="70%"
+          padding={2}
+          type="text"
+          value={barcodeData}
+          onChange={handleInputChange}
+          placeholder="Enter barcode data"
+          marginBottom={4}
+        />
+        {barcodeData && <Barcode value={barcodeData} />}
+      </Box>
+
+      <Box align="center" padding={3} gap={5}>
+        <Input
+          border="1px solid grey"
+          width="70%"
+          padding={2}
+          type="text"
+          value={qrCodeData}
+          onChange={handleQrInputChange}
+          placeholder="Enter barcode data"
+          marginBottom={4}
+        />
+        {qrCodeData && <QRCode value={qrCodeData} />}
+      </Box>
+
+      <Box align="center">
+        <Heading>Password Generator</Heading>
+        <Box mt={3}>
+          <label>Password Length:</label>
+          <Input
+            ml={5}
+            width="8%"
+            type="number"
+            value={passwordLength}
+            onChange={(e) => setPasswordLength(e.target.value)}
+          />
+        </Box>
+        <Box justifyContent="center"display="flex" flexDirection="row" gap={5}>
+          <label>Include Uppercase Letters:</label>
+          <input
+            type="checkbox"
+            checked={includeUppercase}
+            onChange={() => setIncludeUppercase(!includeUppercase)}
+          />
+          <label>Include Lowercase Letters:</label>
+          <input
+            type="checkbox"
+            checked={includeLowercase}
+            onChange={() => setIncludeLowercase(!includeLowercase)}
+          />
+
+          <label>Include Numbers:</label>
+          <input
+            type="checkbox"
+            checked={includeNumbers}
+            onChange={() => setIncludeNumbers(!includeNumbers)}
+          />
+
+          <label>Include Symbols:</label>
+          <input
+            type="checkbox"
+            checked={includeSymbols}
+            onChange={() => setIncludeSymbols(!includeSymbols)}
+          />
+        </Box>
+
+        <Button mt={3} onClick={generatePassword}>Click to Generate Password</Button>
+        <Box mt={3}>
+          <label ml={3}>Generated Password:</label>
+          <Input type="text" value={password} readOnly width="30%" />
+        </Box>
       </Box>
     </div>
   );

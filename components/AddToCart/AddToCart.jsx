@@ -1,3 +1,4 @@
+"use client"
 import {
   Flex,
   Box,
@@ -8,21 +9,40 @@ import {
   Spacer,
   Badge,
 } from "@chakra-ui/react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {useEffect, useState} from "react"
+import {removeFromCart, increaseQuantity, decreaseQuantity} from "../../store/actions/cartAction"
+import {MdDelete} from "react-icons/md";
+import { useRouter } from "next/router";
 
 function Cart() {
-  const cart = useSelector((state) => state.cart);
-  console.log(cart);
+  const [cart, setCart] = useState([]);
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+  const router = useRouter();
+
+  
+ 
+  useEffect(()=>{
+    setCart(cartItems);
+ }),[]
 
   return (
     <Flex direction="column" p={4} align="center">
-      <Text fontSize="3xl" fontWeight="bold" mb={4}>
+      <Text
+        fontSize="3xl"
+        fontWeight="bold"
+        mb={4}
+        suppressHydrationWarning={true}
+      >
         Your Cart
       </Text>
-      {cart?.items.length === 0 ? (
-        <Text fontSize="lg">Your cart is empty.</Text>
+      {cart?.length == 0 ? (
+        <Text fontSize="lg" suppressHydrationWarning={true}>
+          Your cart is empty.
+        </Text>
       ) : (
-        cart?.items.map((product, index) => (
+        cart?.map((product, index) => (
           <Box
             key={index}
             borderWidth="1px"
@@ -35,32 +55,57 @@ function Cart() {
           >
             <Image
               src={product.image}
-              alt={product.name}
               boxSize="100px"
               objectFit="cover"
               marginRight="4"
             />
-            <Flex direction="column" flex="1">
-              <Text fontSize="xl" fontWeight="bold">
-                {product.name}
+            <Flex direction="column" flex={1}>
+              <Text
+                fontSize="xl"
+                fontWeight="bold"
+                suppressHydrationWarning={true}
+              >
+                {product.title}
               </Text>
-              <Text fontSize="md" color="gray.600">
+              <Text
+                fontSize="md"
+                color="gray.600"
+                suppressHydrationWarning={true}
+              >
                 ${product.price}
               </Text>
               {/* You can add more product details here */}
             </Flex>
             <Spacer />
-            <IconButton
-              aria-label="Remove from cart"
-              icon={<Badge colorScheme="red">-</Badge>}
-              // Dispatch an action to remove the product from the cart
-              // Here, you should dispatch an action to remove the product from the cart
-              // Example: onClick={() => dispatch(removeFromCart(product.id))}
-            />
+
+            <Button
+              onClick={() => {
+                dispatch(increaseQuantity(product.id));
+              }}
+            >
+              +
+            </Button>
+
+            <Text p={3}> {product.quantity}</Text>
+
+            <Button
+              onClick={() => {
+                dispatch(decreaseQuantity(product.id));
+              }}
+            >
+              -
+            </Button>
+            <Button bg="red.500" ml={2} colorScheme="red" color="white"
+              onClick={() => {
+                dispatch(removeFromCart(product.id));
+              }}
+            >
+              <MdDelete/>
+            </Button>
           </Box>
         ))
       )}
-      <Button colorScheme="blue" size="lg" mt={4}>
+      <Button colorScheme="blue" size="lg" mt={4} onClick={()=>router.push("/addToCart/checkout")}>
         Checkout
       </Button>
     </Flex>

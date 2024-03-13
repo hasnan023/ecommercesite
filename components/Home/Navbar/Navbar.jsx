@@ -5,7 +5,9 @@ import {
   Spacer,
   IconButton,
   useColorMode,
+  Badge,
   useBreakpointValue,
+  Button,
   useDisclosure,
 } from "@chakra-ui/react";
 import { FaMoon } from "react-icons/fa";
@@ -16,6 +18,7 @@ import { LuShoppingCart } from "react-icons/lu";
 import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
@@ -29,6 +32,8 @@ const Navbar = () => {
   const toggle = () => {
     setIsOpen(!isOpen);
   };
+
+  const cartItems = useSelector((state) => state.cart.items);
   return (
     <Box bg="white.500" p={4} shadow="md">
       <Flex
@@ -37,7 +42,7 @@ const Navbar = () => {
       >
         {/* Section 1: Brand Name */}
         <Text fontSize="xl" fontWeight="bold" color="gray">
-          YourBrand
+          Vola.pk
         </Text>
         {/* Section 2: Links */}
         {(!isSmallerScreen || isOpen) && (
@@ -67,6 +72,11 @@ const Navbar = () => {
                 Contact
               </Text>
             </Link>
+            <Link href="/practiceCode" passHref>
+              <Text mx={2} color="grey" onClick={closeMenu}>
+                Practice Code
+              </Text>
+            </Link>
           </Flex>
         )}
 
@@ -85,13 +95,35 @@ const Navbar = () => {
               color="grey"
               mb={2}
             />
-            <IconButton
-              icon={<LuShoppingCart />}
-              color="grey"
-              ml={2}
-              onClick={closeMenu}
-              mb={2}
-            />
+            <Link href="/addToCart" passHref>
+              <Box position="relative" display="inline-block">
+                <IconButton
+                  icon={<LuShoppingCart />}
+                  color="grey"
+                  ml={2}
+                  onClick={closeMenu}
+                  mb={2}
+                />
+                {cartItems && cartItems.length > 0 && (
+                  <Box
+                    position="absolute"
+                    top="-2px"
+                    left="3px"
+                    bg="red"
+                    color="white"
+                    borderRadius="50%"
+                    width="15px"
+                    height="15px"
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    fontSize="10px"
+                  >
+                    {cartItems.length}
+                  </Box>
+                )}
+              </Box>
+            </Link>
             <IconButton
               icon={<FaRegUserCircle />}
               color="grey"

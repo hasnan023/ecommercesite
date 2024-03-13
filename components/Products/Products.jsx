@@ -11,6 +11,7 @@ import {
   Input,
   HStack,
   Select,
+  Tag,
   InputRightElement,
   Spinner,
   InputGroup,
@@ -73,7 +74,7 @@ const rangeHandler = (newValues) => {
 }
 
   return (
-    <Box>
+    <Box shadow="lg" mt={7} borderRadius="50px">
       <Center>
         <Text mt={10} fontSize="2xl">
           Featured Products
@@ -99,16 +100,20 @@ const rangeHandler = (newValues) => {
             placeholder="search by category"
           >
             {categories.map((category) => (
-              <option value={category}>{category}</option>
+              <option defaulValue={filter} value={category}>
+                {category}
+              </option>
             ))}
           </Select>
 
           <Button onClick={clearAll}>x</Button>
         </>
         <Box width="10%">
-          <RangeSlider 
+          <RangeSlider
             aria-label={["min", "max"]}
-            defaultValue={[0, 100]}
+            defaultValue={[0, 1000]}
+            min={0}
+            max={1000}
             onChange={rangeHandler}
           >
             <RangeSliderTrack>
@@ -143,13 +148,34 @@ const rangeHandler = (newValues) => {
         >
           {filteredProducts.map((product) => (
             <GridItem key={product.id}>
-              <Box maxW="sm" borderRadius="lg" overflow="hidden" shadow="2xl">
-                <Image
-                  src={product.image}
-                  alt={product.title}
-                  width="80%"
-                  height="35vh"
-                />
+              <Box maxW="sm" borderRadius="lg" shadow="2xl">
+                <Box position="relative">
+                  <Image
+                    src={product.image}
+                    alt={product.title}
+                    width="80%"
+                    height="35vh"
+                  />
+
+                  <Tag
+                    position="absolute"
+                    transform="rotate(45deg)"
+                    top={4}
+                    right={2}
+                    width="20%"
+                    bg="#e60c08"
+                    color="white"
+                    p={1}
+                  >
+                    <Text ml={5}>
+                      {product.rating.rate < 3
+                        ? "50%"
+                        : product.rating.rate >= 3 && product.rating.rate <= 4
+                        ? "30%"
+                        : "10%"}
+                    </Text>
+                  </Tag>
+                </Box>
                 <Box p="6">
                   <Tooltip label={product.title} aria-label="title-tooltip">
                     <Heading
@@ -162,7 +188,18 @@ const rangeHandler = (newValues) => {
                       {product.title.slice(0, 20)}
                     </Heading>
                   </Tooltip>
-                  <Text>${product.price}</Text>
+
+                  <Text as="s">
+                    ${product.price} <br />
+                  </Text>
+                  <Text>
+                    $
+                    {product.rating.rate < 3
+                      ? product.price * 0.5
+                      : product.rating.rate >= 3 && product.rating.rate <= 4
+                      ? product.price * 0.3
+                      : (product.price * 0.9).toFixed(2)}
+                  </Text>
                   <Tooltip
                     label={product.description}
                     aria-label="description-tooltip"
@@ -176,7 +213,7 @@ const rangeHandler = (newValues) => {
                   </Text>
 
                   <Link href={`/single?productId=${product.id}`} passHref>
-                    <Button>Shop</Button>
+                    <Button colorScheme="teal">Shop</Button>
                   </Link>
                 </Box>
               </Box>

@@ -6,6 +6,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../store/actions/cartAction";
 
 
+
 const ProductPage = () => {
     const router = useRouter();
     const[loading,setLoading] =useState(false);
@@ -73,7 +74,10 @@ const addToCartHandler = (product) => {
           </Flex>
 
           <Center>
-            <Button onClick={() => addToCartHandler(product)}>
+            <Button
+              colorScheme="teal"
+              onClick={() => addToCartHandler(product)}
+            >
               Add to Cart
             </Button>
           </Center>

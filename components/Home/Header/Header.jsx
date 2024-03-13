@@ -20,40 +20,43 @@ const Header = () => {
   //      "caption for image4.jpg",
   //    ],
   //    []
-  //  );
-
+  //  )
+const tagLine = "Discover Endless Treasures, Delivered \n to Your Door"
   return (
-    <Flex>
+    <Flex
+      maxHeight="100vh"
+      justifyContent="center"
+      marginBottom={10}
+      shadow="lg"
+      padding={6}
+    >
       <Grid
-        templateColumns={{ base: "1fr", md: "1fr 1fr" }} // Adjusted template columns
-        gap={4}
-        alignItems="center"
-        p={8}
+        templateColumns={{ base: "1fr", md: "1fr 1fr" }}
         bg="white.500"
+        alignItems="center"
       >
-        {/* Left Section */}
-        <Box my={4} align="center" justifyContent="center" gap={15}>
-          <Text fontSize={40} color="grey">
-            {" "}
-            {/* Adjusted font size */}
-            Take it easy
+        <Box my={4} align="center" justifyContent="center">
+          <Text fontSize={30} color="grey" fontWeight="bold">
+            Vola.pk
           </Text>
-          <Text my={4}>
-            Creating a better life for you, Creating a better life for you
+          <Text fontSize={30} my={4} whiteSpace="pre-line">
+            {tagLine}
           </Text>
-          <Button my={4}>Shop</Button>
+          <Button colorScheme="teal" size="lg" my={4}>
+            Shop
+          </Button>
         </Box>
 
-        {/* Right Section */}
-        <Box align="center">
+        <>
           <Image
+            align="center"
             src="/img4.png" // Replace with the path to your image
             alt="Your Image Alt Text"
             alignItems="center"
-            boxSize={{ base: "450px", md: "650px" }} // Adjusted box size
+            // Adjusted box size
             objectFit="contain"
           />
-        </Box>
+        </>
 
         {/* <ImageSlide images={images} captions={captions} /> */}
       </Grid>
