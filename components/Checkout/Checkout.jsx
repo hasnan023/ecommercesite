@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 
 const Checkout = () => {
   const cartItems = useSelector((state) => state.cart.items);
+
   const [cart, setCart] = useState([]);
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
@@ -34,10 +35,9 @@ const Checkout = () => {
   const handleKeyDown = (event, preRef, nextRef) => {
     if (event.key === "ArrowDown" && nextRef.current) {
       nextRef.current.focus();
+    } else if (event.key === "ArrowUp" && preRef.current) {
+      preRef.current.focus();
     }
-     else if (event.key === "ArrowUp" && preRef.current) {
-       preRef.current.focus();
-     }
   };
 
   return (
@@ -52,7 +52,7 @@ const Checkout = () => {
             mb={4}
             value={name}
             onChange={(e) => setName(e.target.value)}
-            onKeyDown={(e) => handleKeyDown(e, nameInputRef, addressInputRef )}
+            onKeyDown={(e) => handleKeyDown(e, nameInputRef, addressInputRef)}
           />
           <Input
             ref={addressInputRef}

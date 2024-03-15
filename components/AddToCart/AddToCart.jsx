@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import {
   Flex,
   Box,
@@ -10,22 +10,37 @@ import {
   Badge,
 } from "@chakra-ui/react";
 import { useSelector, useDispatch } from "react-redux";
-import {useEffect, useState} from "react"
-import {removeFromCart, increaseQuantity, decreaseQuantity} from "../../store/actions/cartAction"
-import {MdDelete} from "react-icons/md";
+import { useEffect, useState } from "react";
+import {
+  removeFromCart,
+  increaseQuantity,
+  decreaseQuantity,
+} from "../../store/actions/cartAction";
+import { MdDelete } from "react-icons/md";
 import { useRouter } from "next/router";
+import { toast } from "react-toastify";
 
-function Cart() {
+function AddToCart() {
   const [cart, setCart] = useState([]);
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
+  const user = useSelector((state) => state.user);
   const router = useRouter();
 
-  
- 
-  useEffect(()=>{
+  useEffect(() => {
     setCart(cartItems);
- }),[]
+  }),
+    [];
+
+  const handleCheckout = () => {
+    if (user && user.user != null) {
+      router.push("/addToCart/checkout");
+    } else {
+      toast.error("Please login to proceed to checkout", {
+        position: "bottom-center",
+      });
+    }
+  };
 
   return (
     <Flex direction="column" p={4} align="center">
@@ -55,8 +70,7 @@ function Cart() {
             suppressHydrationWarning
           >
             <Image
-            suppressHydrationWarning
-
+              suppressHydrationWarning
               src={product.image}
               boxSize="100px"
               objectFit="cover"
@@ -98,17 +112,21 @@ function Cart() {
             >
               -
             </Button>
-            <Button bg="red.500" ml={2} colorScheme="red" color="white"
+            <Button
+              bg="red.500"
+              ml={2}
+              colorScheme="red"
+              color="white"
               onClick={() => {
                 dispatch(removeFromCart(product.id));
               }}
             >
-              <MdDelete/>
+              <MdDelete />
             </Button>
           </Box>
         ))
       )}
-      <Button colorScheme="blue" size="lg" mt={4} onClick={()=>router.push("/addToCart/checkout")}>
+      <Button colorScheme="blue" size="lg" mt={4} onClick={handleCheckout}>
         Checkout
       </Button>
     </Flex>

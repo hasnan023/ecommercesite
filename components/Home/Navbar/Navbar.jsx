@@ -7,8 +7,13 @@ import {
   useColorMode,
   Badge,
   useBreakpointValue,
+  Select,
   Button,
   useDisclosure,
+  MenuButton,
+  Menu,
+  MenuList,
+  MenuItem,
 } from "@chakra-ui/react";
 import { FaMoon } from "react-icons/fa";
 import { GiHamburgerMenu } from "react-icons/gi";
@@ -19,8 +24,18 @@ import { FaRegUserCircle } from "react-icons/fa";
 import { IoIosClose } from "react-icons/io";
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { getAuth, signOut } from "firebase/auth";
+import { useRouter } from "next/router";
+import { logout } from "../../../store/actions/userAction";
+import { useDispatch } from "react-redux";
+import { BiLogIn } from "react-icons/bi";
 
 const Navbar = () => {
+  //const auth = getAuth();
+  const router = useRouter();
+  const user = useSelector((state) => state.user);
+  console.log(user);
+  const dispatch = useDispatch();
   const { colorMode, toggleColorMode } = useColorMode();
   const isSmallerScreen = useBreakpointValue({ base: true, sm: false });
   //const { isOpen, onToggle } = useDisclosure();
@@ -31,6 +46,12 @@ const Navbar = () => {
 
   const toggle = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLogout = () => {
+    console.log("User signed out!");
+    dispatch(logout());
+    router.push("/signup");
   };
 
   const cartItems = useSelector((state) => state.cart.items);
@@ -124,13 +145,32 @@ const Navbar = () => {
                 )}
               </Box>
             </Link>
-            <IconButton
-              icon={<FaRegUserCircle />}
-              color="grey"
-              ml={2}
-              onClick={closeMenu}
-              mb={2}
-            />
+            {console.log(user)}
+            {user && user.user != null ? (
+              <Menu>
+                <MenuButton
+                  as={IconButton}
+                  icon={<FaRegUserCircle />}
+                  color="grey"
+                  ml={2}
+                  onClick={closeMenu}
+                  mb={2}
+                />
+                <MenuList>
+                  <MenuItem>Login</MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </MenuList>
+              </Menu>
+            ) : (
+              <IconButton
+                ml={2}
+                mb={2}
+                onClick={() => {
+                  router.push("/signup");
+                }}
+                icon={<BiLogIn />}
+              />
+            )}
           </Flex>
         )}
         {/* Hamburger menu for smaller screens */}
