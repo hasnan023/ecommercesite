@@ -21,17 +21,18 @@ import {
   RangeSliderThumb,
   Tooltip,
 } from "@chakra-ui/react";
-  
 
 import React, { useEffect, useState } from "react";
+import { getTokenizedAndEmbeddedData } from "../../Model/processData";
+import axios from "axios";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [refresh, setRefresh] = useState(false);
-  const[filter, setFilter] = useState(null);
+  const [filter, setFilter] = useState(null);
   const [categories, setCategories] = useState([]);
-  const[loading, setLoading] = useState(null);
-  const[rangeValue, setRangeValue] = useState([]);
+  const [loading, setLoading] = useState(null);
+  const [rangeValue, setRangeValue] = useState([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -41,10 +42,10 @@ const Products = () => {
       if (response.ok) {
         const data = await response.json();
         setProducts(data);
-        
-      const unFilteredCategories = data.map((product) => product.category);
-        setCategories(Array.from(new Set(unFilteredCategories))); 
-      setLoading(false);
+
+        const unFilteredCategories = data.map((product) => product.category);
+        setCategories(Array.from(new Set(unFilteredCategories)));
+        setLoading(false);
       }
       console.log(categories);
     };
@@ -56,23 +57,32 @@ const Products = () => {
   const filteredProducts = products.filter((product) => {
     return (
       product?.title.toLowerCase().includes(searchQuery.toLowerCase()) &&
-      (filter ? product?.category === filter : true) && (
-        rangeValue.length > 0
-          ? product.price >= rangeValue[0] && product.price <= rangeValue[1]
-          : true
-      )
+      (filter ? product?.category === filter : true) &&
+      (rangeValue.length > 0
+        ? product.price >= rangeValue[0] && product.price <= rangeValue[1]
+        : true)
     );
   });
- const clearAll = () => {
-   setFilter(null);
-   setSearchQuery("");
- };   console.log(filter);
+  const clearAll = () => {
+    setFilter(null);
+    setSearchQuery("");
+  };
+  console.log(filter);
 
-const rangeHandler = (newValues) => {
-  setRangeValue(newValues);
-  console.log(newValues);
-}
-
+  const rangeHandler = (newValues) => {
+    setRangeValue(newValues);
+    console.log(newValues);
+  };
+  const handleProductClick = async (productId) => {
+    try {
+      // Send the click data to the server
+      await axios.post("http://localhost:5000/tensor", {
+        productId: productId,
+      });
+    } catch (error) {
+      console.error("Error sending click data:", error);
+    }
+  };
   return (
     <Box shadow="lg" mt={7} borderRadius="50px">
       <Center>
@@ -213,7 +223,12 @@ const rangeHandler = (newValues) => {
                   </Text>
 
                   <Link href={`/single?productId=${product.id}`} passHref>
-                    <Button colorScheme="teal">Shop</Button>
+                    <Button
+                      onClick={() => handleProductClick(product.id)}
+                      colorScheme="teal"
+                    >
+                      Shop
+                    </Button>
                   </Link>
                 </Box>
               </Box>
